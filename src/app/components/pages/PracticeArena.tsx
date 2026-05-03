@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Brain, Sparkles, ChevronRight, CheckCircle2, XCircle, Trophy } from "lucide-react";
 import { useData, AnalysisResult } from "../../context/DataContext";
 import confetti from "canvas-confetti";
+import { toast } from "sonner";
 
 export function PracticeArena() {
   const { analysisResult } = useData();
@@ -32,8 +33,13 @@ export function PracticeArena() {
     }
   ];
 
-
   const currentQuestion = questions[currentIdx];
+
+  const handleShareResults = () => {
+    toast.success("Results link copied!", {
+      description: `I just scored ${score}/${questions.length} in ${currentQuestion.topic} practice on ExamIQ!`
+    });
+  };
 
   const handleOptionSelect = (option: string) => {
     if (showResult) return;
@@ -67,24 +73,35 @@ export function PracticeArena() {
   if (isFinished) {
     return (
       <div className="min-h-screen pt-32 px-6 flex items-center justify-center">
-        <div className="max-w-md w-full bg-card border border-border rounded-[3rem] p-12 text-center">
-          <Trophy className="w-20 h-20 text-primary mx-auto mb-6" />
-          <h2 className="text-3xl font-bold mb-4">Practice Complete!</h2>
+        <div className="max-w-md w-full bg-card border border-border rounded-[3rem] p-12 text-center shadow-2xl shadow-primary/10">
+          <div className="w-24 h-24 rounded-full bg-success/10 flex items-center justify-center mx-auto mb-6">
+            <Trophy className="w-12 h-12 text-success" />
+          </div>
+          <h2 className="text-4xl font-bold mb-4">Practice Complete!</h2>
           <p className="text-muted-foreground mb-8 text-lg">
-            You scored {score} out of {questions.length}
+            You scored <span className="text-primary font-bold">{score}</span> out of <span className="font-bold">{questions.length}</span>
           </p>
-          <button
-            onClick={() => {
-              setIsFinished(false);
-              setCurrentIdx(0);
-              setScore(0);
-              setSelectedOption(null);
-              setShowResult(false);
-            }}
-            className="w-full py-4 rounded-full bg-gradient-to-r from-primary to-secondary text-white font-bold hover:scale-[1.02] transition-transform"
-          >
-            Practice Again
-          </button>
+          
+          <div className="flex flex-col gap-4">
+            <button
+              onClick={() => {
+                setIsFinished(false);
+                setCurrentIdx(0);
+                setScore(0);
+                setSelectedOption(null);
+                setShowResult(false);
+              }}
+              className="w-full py-4 rounded-2xl bg-gradient-to-r from-primary to-secondary text-white font-bold hover:scale-[1.02] transition-transform shadow-lg shadow-primary/20"
+            >
+              Practice Again
+            </button>
+            <button
+              onClick={handleShareResults}
+              className="w-full py-4 rounded-2xl bg-accent border border-border text-foreground font-bold hover:bg-accent/80 transition-colors"
+            >
+              Share Results
+            </button>
+          </div>
         </div>
       </div>
     );

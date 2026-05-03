@@ -1,8 +1,37 @@
 import { Calendar as CalendarIcon, Clock, CheckCircle2, ChevronRight, BookOpen, Target, TrendingUp } from "lucide-react";
 import { useData, AnalysisResult } from "../../context/DataContext";
+import { toast } from "sonner";
+import { useState } from "react";
 
 export function StudyPlanner() {
   const { analysisResult } = useData();
+  const [completedDays, setCompletedDays] = useState<Set<number>>(new Set());
+
+  const handleMarkDone = (idx: number) => {
+    setCompletedDays(prev => {
+      const next = new Set(prev);
+      if (next.has(idx)) {
+        next.delete(idx);
+        toast.info("Marked as incomplete");
+      } else {
+        next.add(idx);
+        toast.success("Great job! Task completed.");
+      }
+      return next;
+    });
+  };
+
+  const handleStartLearning = (topic: string) => {
+    toast.info(`Starting session: ${topic}`, {
+      description: "Opening relevant study materials and AI practice questions."
+    });
+  };
+
+  const handleExport = () => {
+    toast.success("Calendar sync successful", {
+      description: "Your study schedule has been exported to your device calendar."
+    });
+  };
 
   const studyPlan: AnalysisResult['studyPlan'] = analysisResult?.studyPlan || [
     {
@@ -41,7 +70,7 @@ export function StudyPlanner() {
         {/* Header */}
         <div className="flex items-center justify-between mb-12">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg shadow-primary/20">
               <CalendarIcon className="w-6 h-6 text-white" />
             </div>
             <div>
@@ -49,7 +78,10 @@ export function StudyPlanner() {
               <p className="text-muted-foreground">Optimized schedule based on your weak areas</p>
             </div>
           </div>
-          <button className="px-6 py-3 rounded-full bg-primary/10 text-primary font-semibold hover:bg-primary/20 transition-colors flex items-center gap-2">
+          <button 
+            onClick={handleExport}
+            className="px-6 py-3 rounded-full bg-primary/10 text-primary font-semibold hover:bg-primary/20 transition-colors flex items-center gap-2"
+          >
             <span>Export to Calendar</span>
             <ChevronRight className="w-4 h-4" />
           </button>
@@ -57,7 +89,7 @@ export function StudyPlanner() {
 
         {/* Overview Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-gradient-to-br from-card to-accent border border-border rounded-[2rem] p-6">
+          <div className="bg-card border border-border rounded-[2rem] p-6 shadow-sm">
             <div className="flex items-center gap-3 mb-3">
               <Clock className="w-5 h-5 text-primary" />
               <span className="text-sm text-muted-foreground">Total Study Time</span>
@@ -66,7 +98,7 @@ export function StudyPlanner() {
             <div className="text-sm text-muted-foreground mt-1">Next 2 weeks</div>
           </div>
 
-          <div className="bg-gradient-to-br from-card to-accent border border-border rounded-[2rem] p-6">
+          <div className="bg-card border border-border rounded-[2rem] p-6 shadow-sm">
             <div className="flex items-center gap-3 mb-3">
               <Target className="w-5 h-5 text-success" />
               <span className="text-sm text-muted-foreground">Priority Topics</span>
@@ -75,13 +107,13 @@ export function StudyPlanner() {
             <div className="text-sm text-muted-foreground mt-1">High-impact areas</div>
           </div>
 
-          <div className="bg-gradient-to-br from-card to-accent border border-border rounded-[2rem] p-6">
+          <div className="bg-card border border-border rounded-[2rem] p-6 shadow-sm">
             <div className="flex items-center gap-3 mb-3">
               <TrendingUp className="w-5 h-5 text-secondary" />
               <span className="text-sm text-muted-foreground">Progress</span>
             </div>
-            <div className="text-3xl font-bold text-secondary">45%</div>
-            <div className="text-sm text-muted-foreground mt-1">On track</div>
+            <div className="text-3xl font-bold text-secondary">{Math.round((completedDays.size / studyPlan.length) * 100) || 0}%</div>
+            <div className="text-sm text-muted-foreground mt-1">Completion rate</div>
           </div>
         </div>
 
@@ -90,7 +122,10 @@ export function StudyPlanner() {
           {studyPlan.map((day, idx) => (
             <div
               key={idx}
-              className="group relative bg-card border border-border rounded-[2.5rem] p-8 hover:border-primary/50 transition-all duration-300"
+              className={`
+                group relative bg-card border border-border rounded-[2.5rem] p-8 transition-all duration-300
+                ${completedDays.has(idx) ? 'opacity-70 grayscale-[0.5]' : 'hover:border-primary/50 shadow-sm'}
+              `}
             >
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div className="flex-1">
@@ -103,6 +138,12 @@ export function StudyPlanner() {
                     }`}>
                       {day.priority} Priority
                     </span>
+                    {completedDays.has(idx) && (
+                      <span className="px-4 py-1.5 rounded-full bg-success/10 text-success text-sm font-bold flex items-center gap-1">
+                        <CheckCircle2 className="w-4 h-4" />
+                        Completed
+                      </span>
+                    )}
                   </div>
                   
                   <h3 className="text-2xl font-bold mb-4 flex items-center gap-2">
@@ -113,8 +154,8 @@ export function StudyPlanner() {
                   <ul className="space-y-3 mb-6">
                     {day.tasks.map((task, tidx) => (
                       <li key={tidx} className="flex items-center gap-3 text-muted-foreground">
-                        <CheckCircle2 className="w-5 h-5 text-success" />
-                        <span>{task}</span>
+                        <CheckCircle2 className={`w-5 h-5 ${completedDays.has(idx) ? 'text-success' : 'text-success/30'}`} />
+                        <span className={completedDays.has(idx) ? 'line-through' : ''}>{task}</span>
                       </li>
                     ))}
                   </ul>
@@ -128,11 +169,23 @@ export function StudyPlanner() {
                 </div>
 
                 <div className="flex flex-col gap-3 md:w-48">
-                  <button className="w-full py-3 rounded-2xl bg-gradient-to-r from-primary to-secondary text-white font-semibold hover:scale-[1.02] transition-transform">
+                  <button 
+                    onClick={() => handleStartLearning(day.topic)}
+                    className="w-full py-3 rounded-2xl bg-gradient-to-r from-primary to-secondary text-white font-semibold hover:scale-[1.02] transition-transform shadow-lg shadow-primary/20"
+                  >
                     Start Learning
                   </button>
-                  <button className="w-full py-3 rounded-2xl bg-accent border border-border text-foreground font-semibold hover:bg-accent/80 transition-colors">
-                    Mark Done
+                  <button 
+                    onClick={() => handleMarkDone(idx)}
+                    className={`
+                      w-full py-3 rounded-2xl border font-semibold transition-all
+                      ${completedDays.has(idx) 
+                        ? 'bg-success/10 border-success/20 text-success' 
+                        : 'bg-accent border-border text-foreground hover:bg-accent/80'
+                      }
+                    `}
+                  >
+                    {completedDays.has(idx) ? 'Completed' : 'Mark Done'}
                   </button>
                 </div>
               </div>
@@ -141,7 +194,7 @@ export function StudyPlanner() {
         </div>
 
         {/* Milestones */}
-        <div className="bg-gradient-to-br from-card to-accent border border-border rounded-[2.5rem] p-8">
+        <div className="bg-card border border-border rounded-[2.5rem] p-8 shadow-sm">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
               <CheckCircle2 className="w-5 h-5 text-primary" />

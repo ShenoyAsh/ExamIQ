@@ -14,7 +14,10 @@ export interface AnalysisInput {
   syllabus: File | null;
   examDate: string;
   studyHours: number;
+  studentClass: string;
+  subject: string;
 }
+
 
 export async function analyzeExamData(input: AnalysisInput) {
   // 1. Extract text from papers (Simulated for now, as real PDF parsing is complex in browser)
@@ -23,14 +26,16 @@ export async function analyzeExamData(input: AnalysisInput) {
   const syllabusText = input.syllabus ? await extractTextFromFile(input.syllabus) : '';
 
   const combinedText = `
+    STUDENT CLASS/GRADE: ${input.studentClass}
+    SUBJECT: ${input.subject}
+    EXAM DATE: ${input.examDate}
+    DAILY STUDY HOURS: ${input.studyHours}
+
     EXAM PAPERS CONTENT:
     ${paperTexts.join('\n\n---\n\n')}
 
     SYLLABUS CONTENT:
     ${syllabusText}
-
-    EXAM DATE: ${input.examDate}
-    DAILY STUDY HOURS: ${input.studyHours}
   `;
 
   // 2. Call OpenAI
@@ -40,7 +45,8 @@ export async function analyzeExamData(input: AnalysisInput) {
       messages: [
         {
           role: "system",
-          content: `You are an expert exam analyst. Analyze the provided exam papers and syllabus.
+          content: `You are an expert exam analyst specialized in ${input.subject} for ${input.studentClass}. 
+          Analyze the provided exam papers and syllabus.
           Return a JSON object with the following structure:
           {
             "topics": [{"topic": string, "frequency": number, "trend": "up" | "down" | "stable"}],
@@ -56,7 +62,7 @@ export async function analyzeExamData(input: AnalysisInput) {
             "studyPlan": [{"day": string, "topic": string, "tasks": string[], "duration": string, "priority": "High" | "Medium" | "Low"}],
             "practiceQuestions": [{"id": string, "question": string, "options": string[], "correctAnswer": string, "explanation": string, "difficulty": string, "topic": string}]
           }
-          Ensure the data is realistic and based on the provided text. If no text is provided, generate a plausible sample based on the context of a general academic exam.
+          Ensure the data is realistic and based on the provided text. If no text is provided, generate a highly realistic sample specifically for ${input.subject} at the ${input.studentClass} level.
           `
         },
         {
@@ -66,6 +72,7 @@ export async function analyzeExamData(input: AnalysisInput) {
       ],
       response_format: { type: "json_object" }
     });
+
 
     const content = response.choices[0].message.content;
     if (!content) throw new Error("No content returned from OpenAI");

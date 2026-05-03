@@ -34,6 +34,8 @@ interface DataContextType {
   setAnalysisResult: (result: AnalysisResult) => void;
   isLoading: boolean;
   setIsLoading: (loading: boolean) => void;
+  userContext: { studentClass: string; subject: string } | null;
+  setUserContext: (context: { studentClass: string; subject: string }) => void;
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -41,13 +43,22 @@ const DataContext = createContext<DataContextType | undefined>(undefined);
 export function DataProvider({ children }: { children: ReactNode }) {
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [userContext, setUserContext] = useState<{ studentClass: string; subject: string } | null>(null);
 
   return (
-    <DataContext.Provider value={{ analysisResult, setAnalysisResult, isLoading, setIsLoading }}>
+    <DataContext.Provider value={{ 
+      analysisResult, 
+      setAnalysisResult, 
+      isLoading, 
+      setIsLoading,
+      userContext,
+      setUserContext
+    }}>
       {children}
     </DataContext.Provider>
   );
 }
+
 
 export function useData() {
   const context = useContext(DataContext);

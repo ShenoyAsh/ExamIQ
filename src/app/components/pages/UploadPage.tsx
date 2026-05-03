@@ -1,14 +1,18 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import { Upload, FileText, BookOpen, Settings, ChevronRight } from "lucide-react";
+import { Upload, FileText, BookOpen, Settings, ChevronRight, GraduationCap, Shapes } from "lucide-react";
+import { useData } from "../../context/DataContext";
 
 export function UploadPage() {
   const navigate = useNavigate();
+  const { setUserContext } = useData();
   const [step, setStep] = useState(1);
   const [papers, setPapers] = useState<File[]>([]);
   const [syllabus, setSyllabus] = useState<File | null>(null);
   const [examDate, setExamDate] = useState("");
   const [studyHours, setStudyHours] = useState(2);
+  const [studentClass, setStudentClass] = useState("");
+  const [subject, setSubject] = useState("");
 
   const handlePaperUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -23,10 +27,12 @@ export function UploadPage() {
   };
 
   const handleAnalyze = () => {
+    setUserContext({ studentClass, subject });
     navigate("/analysis", {
-      state: { papers, syllabus, examDate, studyHours }
+      state: { papers, syllabus, examDate, studyHours, studentClass, subject }
     });
   };
+
 
   return (
     <div className="pt-32 pb-20 px-6">
@@ -185,6 +191,35 @@ export function UploadPage() {
             </div>
 
             <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block mb-2 font-semibold flex items-center gap-2">
+                    <GraduationCap className="w-4 h-4" />
+                    Target Class / Grade
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Grade 12, Year 10"
+                    value={studentClass}
+                    onChange={(e) => setStudentClass(e.target.value)}
+                    className="w-full px-6 py-4 rounded-2xl bg-input-background border border-border focus:border-primary focus:outline-none transition-colors"
+                  />
+                </div>
+                <div>
+                  <label className="block mb-2 font-semibold flex items-center gap-2">
+                    <Shapes className="w-4 h-4" />
+                    Subject
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Mathematics, Biology"
+                    value={subject}
+                    onChange={(e) => setSubject(e.target.value)}
+                    className="w-full px-6 py-4 rounded-2xl bg-input-background border border-border focus:border-primary focus:outline-none transition-colors"
+                  />
+                </div>
+              </div>
+
               <div>
                 <label className="block mb-2 font-semibold">Exam Date</label>
                 <input
@@ -212,6 +247,7 @@ export function UploadPage() {
                 </div>
               </div>
             </div>
+
 
             <div className="flex gap-4 mt-8">
               <button

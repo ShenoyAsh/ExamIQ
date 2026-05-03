@@ -23,14 +23,17 @@ export function AnalysisPage() {
       return;
     }
 
+    const { subject, studentClass } = input;
+
     const stages = [
-      { text: "Extracting text from papers...", duration: 2000 },
-      { text: "Identifying topics and patterns...", duration: 2500 },
+      { text: `Extracting text from ${subject} papers...`, duration: 2000 },
+      { text: `Identifying ${subject} topics for ${studentClass}...`, duration: 2500 },
       { text: "Analyzing difficulty distribution...", duration: 2000 },
       { text: "Mapping question frequencies...", duration: 2500 },
       { text: "Detecting syllabus gaps...", duration: 2000 },
-      { text: "Generating insights...", duration: 1500 },
+      { text: "Generating personalized insights...", duration: 1500 },
     ];
+
 
     let currentStage = 0;
     const interval = setInterval(() => {

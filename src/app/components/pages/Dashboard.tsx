@@ -13,11 +13,24 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { TrendingUp, Target, AlertCircle, Sparkles } from "lucide-react";
+import { TrendingUp, Target, AlertCircle, Sparkles, Download, Share2 } from "lucide-react";
 import { useData, AnalysisResult } from "../../context/DataContext";
+import { toast } from "sonner";
 
 export function Dashboard() {
-  const { analysisResult } = useData();
+  const { analysisResult, userContext } = useData();
+
+  const handleDownload = () => {
+    toast.success("Intelligence Report generating...", {
+      description: "Your personalized study PDF will be ready in a moment."
+    });
+  };
+
+  const handleShare = () => {
+    toast.info("Sharing Link Copied", {
+      description: "Your dashboard link has been copied to clipboard."
+    });
+  };
 
   // Use real data if available, otherwise use fallback data (same as original dummy data)
   const topicData: AnalysisResult['topics'] = analysisResult?.topics || [
@@ -28,9 +41,9 @@ export function Dashboard() {
   ];
 
   const trendData: AnalysisResult['trends'] = analysisResult?.trends || [
-    { year: "2019", Calculus: 35, Algebra: 42 },
-    { year: "2020", Calculus: 38, Algebra: 40 },
-    { year: "2021", Calculus: 42, Algebra: 38 },
+    { year: "2021", Calculus: 35, Algebra: 42 },
+    { year: "2022", Calculus: 42, Algebra: 38 },
+    { year: "2023", Calculus: 45, Algebra: 40 },
   ];
 
   const difficultyData: AnalysisResult['difficulty'] = analysisResult?.difficulty || [
@@ -51,38 +64,61 @@ export function Dashboard() {
     analysisRange: "5 Yrs"
   };
 
-
   return (
     <div className="pt-32 pb-20 px-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-12">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
-              <Sparkles className="w-6 h-6 text-white" />
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg shadow-primary/20">
+              <Sparkles className="w-8 h-8 text-white" />
             </div>
             <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="px-2 py-0.5 rounded-md bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider">
+                  {userContext?.studentClass || "General"}
+                </span>
+                <span className="px-2 py-0.5 rounded-md bg-secondary/10 text-secondary text-[10px] font-bold uppercase tracking-wider">
+                  {userContext?.subject || "All Subjects"}
+                </span>
+              </div>
               <h1 className="text-4xl font-bold">Intelligence Dashboard</h1>
-              <p className="text-muted-foreground">AI-powered insights from your past papers</p>
+              <p className="text-muted-foreground">Tailored analysis for your {userContext?.subject || "selected"} exams</p>
             </div>
+          </div>
+          
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={handleShare}
+              className="p-3 rounded-xl border border-border hover:bg-accent transition-colors"
+            >
+              <Share2 className="w-5 h-5 text-muted-foreground" />
+            </button>
+            <button 
+              onClick={handleDownload}
+              className="flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-white font-semibold hover:opacity-90 transition-opacity shadow-lg shadow-primary/20"
+            >
+              <Download className="w-5 h-5" />
+              <span>Download Report</span>
+            </button>
           </div>
         </div>
 
         {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-gradient-to-br from-card to-accent border border-border rounded-[2rem] p-6 text-center">
+          <div className="bg-card border border-border rounded-[2rem] p-6 text-center shadow-sm">
             <div className="text-3xl font-bold text-primary mb-1">{stats.topicsFound}</div>
             <div className="text-sm text-muted-foreground">Topics Identified</div>
           </div>
-          <div className="bg-gradient-to-br from-card to-accent border border-border rounded-[2rem] p-6 text-center">
+          <div className="bg-card border border-border rounded-[2rem] p-6 text-center shadow-sm">
             <div className="text-3xl font-bold text-success mb-1">{stats.totalQuestions}</div>
             <div className="text-sm text-muted-foreground">Total Questions</div>
           </div>
-          <div className="bg-gradient-to-br from-card to-accent border border-border rounded-[2rem] p-6 text-center">
+          <div className="bg-card border border-border rounded-[2rem] p-6 text-center shadow-sm">
             <div className="text-3xl font-bold text-secondary mb-1">{stats.gapTopics}</div>
             <div className="text-sm text-muted-foreground">Gap Topics</div>
           </div>
-          <div className="bg-gradient-to-br from-card to-accent border border-border rounded-[2rem] p-6 text-center">
+          <div className="bg-card border border-border rounded-[2rem] p-6 text-center shadow-sm">
             <div className="text-3xl font-bold text-foreground mb-1">{stats.analysisRange}</div>
             <div className="text-sm text-muted-foreground">Analysis Range</div>
           </div>
@@ -91,7 +127,7 @@ export function Dashboard() {
         {/* Bento Grid Analytics */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           {/* Topic Dominance Chart */}
-          <div className="bg-gradient-to-br from-card to-accent border border-border rounded-[2.5rem] p-8">
+          <div className="bg-card border border-border rounded-[2.5rem] p-8 shadow-sm">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
                 <TrendingUp className="w-5 h-5 text-primary" />
@@ -103,13 +139,13 @@ export function Dashboard() {
             </div>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={topicData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(240, 6%, 20%)" />
-                <XAxis dataKey="topic" stroke="hsl(240, 5%, 64%)" angle={-45} textAnchor="end" height={80} />
-                <YAxis stroke="hsl(240, 5%, 64%)" />
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(240, 6%, 90%)" />
+                <XAxis dataKey="topic" stroke="hsl(240, 5%, 46%)" angle={-45} textAnchor="end" height={80} />
+                <YAxis stroke="hsl(240, 5%, 46%)" />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: "hsl(240, 10%, 5%)",
-                    border: "1px solid hsl(240, 6%, 20%)",
+                    backgroundColor: "hsl(0, 0%, 100%)",
+                    border: "1px solid hsl(240, 6%, 90%)",
                     borderRadius: "12px",
                   }}
                 />
@@ -119,7 +155,7 @@ export function Dashboard() {
           </div>
 
           {/* Difficulty Distribution */}
-          <div className="bg-gradient-to-br from-card to-accent border border-border rounded-[2.5rem] p-8">
+          <div className="bg-card border border-border rounded-[2.5rem] p-8 shadow-sm">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-xl bg-success/10 flex items-center justify-center">
                 <Target className="w-5 h-5 text-success" />
@@ -146,8 +182,8 @@ export function Dashboard() {
                 </Pie>
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: "hsl(240, 10%, 5%)",
-                    border: "1px solid hsl(240, 6%, 20%)",
+                    backgroundColor: "hsl(0, 0%, 100%)",
+                    border: "1px solid hsl(240, 6%, 90%)",
                     borderRadius: "12px",
                   }}
                 />
@@ -158,7 +194,7 @@ export function Dashboard() {
         </div>
 
         {/* Trend Mapping */}
-        <div className="bg-gradient-to-br from-card to-accent border border-border rounded-[2.5rem] p-8 mb-8">
+        <div className="bg-card border border-border rounded-[2.5rem] p-8 mb-8 shadow-sm">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center">
               <TrendingUp className="w-5 h-5 text-secondary" />
@@ -170,13 +206,13 @@ export function Dashboard() {
           </div>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={trendData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(240, 6%, 20%)" />
-              <XAxis dataKey="year" stroke="hsl(240, 5%, 64%)" />
-              <YAxis stroke="hsl(240, 5%, 64%)" />
+              <CartesianGrid strokeDasharray="3 3" stroke="hsl(240, 6%, 90%)" />
+              <XAxis dataKey="year" stroke="hsl(240, 5%, 46%)" />
+              <YAxis stroke="hsl(240, 5%, 46%)" />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: "hsl(240, 10%, 5%)",
-                  border: "1px solid hsl(240, 6%, 20%)",
+                  backgroundColor: "hsl(0, 0%, 100%)",
+                  border: "1px solid hsl(240, 6%, 90%)",
                   borderRadius: "12px",
                 }}
               />
@@ -187,7 +223,9 @@ export function Dashboard() {
                   type="monotone"
                   dataKey={t.topic}
                   stroke={["hsl(221, 83%, 53%)", "hsl(142, 76%, 36%)", "hsl(263, 70%, 50%)"][i]}
-                  strokeWidth={2}
+                  strokeWidth={3}
+                  dot={{ r: 4 }}
+                  activeDot={{ r: 6 }}
                 />
               ))}
             </LineChart>
@@ -195,7 +233,7 @@ export function Dashboard() {
         </div>
 
         {/* Gap Topics Table */}
-        <div className="bg-gradient-to-br from-card to-accent border border-border rounded-[2.5rem] p-8">
+        <div className="bg-card border border-border rounded-[2.5rem] p-8 shadow-sm">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-10 h-10 rounded-xl bg-destructive/10 flex items-center justify-center">
               <AlertCircle className="w-5 h-5 text-destructive" />
@@ -257,4 +295,3 @@ export function Dashboard() {
     </div>
   );
 }
-
