@@ -1,0 +1,18 @@
+Unit 1: Calculus
+- Differentiation: Power rule, product rule, quotient rule.
+- Integration: Indefinite and definite integrals, integration by parts.
+- Applications of derivatives: Maxima and Minima.
+
+Unit 2: Algebra
+- Quadratic Equations: Finding roots, discriminant.
+- Complex Numbers: Polar form, De Moivre's Theorem.
+- Matrices and Determinants: Inverse, Cramer's rule.
+
+Unit 3: Statistics and Probability
+- Probability Distributions: Binomial, Poisson, Normal.
+- Correlation and Regression.
+- Mean, Median, Mode for grouped data.
+
+Unit 4: Geometry
+- Coordinate Geometry: Straight lines, circles.
+- Vectors in 3D space.

@@ -1,0 +1,8 @@
+Q1. Differentiate y = ln(x) * e^x. (Calculus)
+Q2. Solve the system of equations using Cramer's Rule: 2x + y = 5, x - y = 1. (Algebra)
+Q3. Find the area under the curve y = x^2 from x=1 to x=3. (Calculus)
+Q4. Define the discriminant of a quadratic equation. (Algebra)
+Q5. A die is rolled twice. What is the probability that the sum is 7? (Statistics)
+Q6. Express the vector AB in terms of i, j, k if A(1,2,3) and B(4,5,6). (Geometry)
+Q7. Find the roots of x^2 + 4x + 4 = 0. (Algebra)
+Q8. What is the derivative of tan(x)? (Calculus)

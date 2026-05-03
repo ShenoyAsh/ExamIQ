@@ -1,13 +1,14 @@
 import OpenAI from 'openai';
 
-// This is a placeholder for the API key. 
-// In a real application, this should be handled securely.
-const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY || '';
+// Updated to use Mistral AI
+const MISTRAL_API_KEY = import.meta.env.VITE_MISTRAL_API_KEY || '';
 
-const openai = new OpenAI({
-  apiKey: OPENAI_API_KEY,
-  dangerouslyAllowBrowser: true // Only for demo purposes
+const client = new OpenAI({
+  apiKey: MISTRAL_API_KEY,
+  baseURL: "https://api.mistral.ai/v1",
+  dangerouslyAllowBrowser: true 
 });
+
 
 export interface AnalysisInput {
   papers: File[];
@@ -38,16 +39,16 @@ export async function analyzeExamData(input: AnalysisInput) {
     ${syllabusText}
   `;
 
-  // 2. Call OpenAI
+  // 2. Call Mistral AI
   try {
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+    const response = await client.chat.completions.create({
+      model: "mistral-small-latest",
       messages: [
         {
           role: "system",
           content: `You are an expert exam analyst specialized in ${input.subject} for ${input.studentClass}. 
           Analyze the provided exam papers and syllabus.
-          Return a JSON object with the following structure:
+          Return ONLY a valid JSON object with the following structure:
           {
             "topics": [{"topic": string, "frequency": number, "trend": "up" | "down" | "stable"}],
             "difficulty": [{"name": "Easy" | "Medium" | "Hard", "value": number, "color": string}],
@@ -74,15 +75,17 @@ export async function analyzeExamData(input: AnalysisInput) {
     });
 
 
+
     const content = response.choices[0].message.content;
     if (!content) throw new Error("No content returned from OpenAI");
 
     return JSON.parse(content);
   } catch (error) {
-    console.error("Error analyzing data with OpenAI:", error);
+    console.error("Error analyzing data with Mistral AI:", error);
     // Fallback to high-quality generated data if API fails or key is missing
     return getFallbackData(input);
   }
+
 }
 
 async function extractTextFromFile(file: File): Promise<string> {

@@ -1,0 +1,13 @@
+Section A (Calculus)
+1. Find the derivative of f(x) = x^3 + 5x^2 - 7x + 10.
+2. Evaluate the integral of sin(x) from 0 to pi.
+3. Determine the maximum value of the function y = -2x^2 + 8x + 5.
+
+Section B (Algebra)
+4. Solve the quadratic equation 3x^2 - 12x + 9 = 0.
+5. Find the inverse of the matrix A = [[1, 2], [3, 4]].
+6. If z = 1 + i, express z in polar form.
+
+Section C (Statistics)
+7. A bag contains 5 red and 3 blue balls. Find the probability of picking 2 red balls.
+8. Calculate the standard deviation for the set: {10, 12, 14, 16, 18}.
