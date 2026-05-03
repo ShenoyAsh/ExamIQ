@@ -1,0 +1,10 @@
+node_modules
+dist
+.env
+.DS_Store
+*.local
+.gemini
+scratch
+ps.pdf
+ps_text.txt
+69f6be886be28_Hackathon-_Problem_Statement__2_.pdf
