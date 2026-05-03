@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
-interface AnalysisResult {
+export interface AnalysisResult {
   topics: { topic: string; frequency: number; trend: 'up' | 'down' | 'stable' }[];
   difficulty: { name: string; value: number; color: string }[];
   gaps: { topic: string; priority: string; lastSeen: string }[];

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Brain, Sparkles, ChevronRight, CheckCircle2, XCircle, Trophy } from "lucide-react";
-import { useData } from "../../context/DataContext";
+import { useData, AnalysisResult } from "../../context/DataContext";
 import confetti from "canvas-confetti";
 
 export function PracticeArena() {
@@ -11,7 +11,7 @@ export function PracticeArena() {
   const [score, setScore] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
 
-  const questions = analysisResult?.practiceQuestions || [
+  const questions: AnalysisResult['practiceQuestions'] = analysisResult?.practiceQuestions || [
     {
       id: "1",
       question: "What is the derivative of x^2?",
@@ -31,6 +31,7 @@ export function PracticeArena() {
       topic: "Calculus"
     }
   ];
+
 
   const currentQuestion = questions[currentIdx];
 

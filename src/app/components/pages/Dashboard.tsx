@@ -14,42 +14,43 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { TrendingUp, Target, AlertCircle, Sparkles } from "lucide-react";
-import { useData } from "../../context/DataContext";
+import { useData, AnalysisResult } from "../../context/DataContext";
 
 export function Dashboard() {
   const { analysisResult } = useData();
 
   // Use real data if available, otherwise use fallback data (same as original dummy data)
-  const topicData = analysisResult?.topics || [
+  const topicData: AnalysisResult['topics'] = analysisResult?.topics || [
     { topic: "Calculus", frequency: 45, trend: "up" },
     { topic: "Algebra", frequency: 38, trend: "stable" },
     { topic: "Statistics", frequency: 32, trend: "up" },
     { topic: "Geometry", frequency: 28, trend: "down" },
   ];
 
-  const trendData = analysisResult?.trends || [
+  const trendData: AnalysisResult['trends'] = analysisResult?.trends || [
     { year: "2019", Calculus: 35, Algebra: 42 },
     { year: "2020", Calculus: 38, Algebra: 40 },
     { year: "2021", Calculus: 42, Algebra: 38 },
   ];
 
-  const difficultyData = analysisResult?.difficulty || [
+  const difficultyData: AnalysisResult['difficulty'] = analysisResult?.difficulty || [
     { name: "Easy", value: 35, color: "hsl(142, 76%, 36%)" },
     { name: "Medium", value: 50, color: "hsl(221, 83%, 53%)" },
     { name: "Hard", value: 15, color: "hsl(0, 62%, 50%)" },
   ];
 
-  const gapTopics = analysisResult?.gaps || [
+  const gapTopics: AnalysisResult['gaps'] = analysisResult?.gaps || [
     { topic: "Complex Numbers", priority: "High", lastSeen: "Never" },
     { topic: "Differential Equations", priority: "High", lastSeen: "2019" },
   ];
 
-  const stats = analysisResult?.stats || {
+  const stats: AnalysisResult['stats'] = analysisResult?.stats || {
     topicsFound: 24,
     totalQuestions: 156,
     gapTopics: 5,
     analysisRange: "5 Yrs"
   };
+
 
   return (
     <div className="pt-32 pb-20 px-6">

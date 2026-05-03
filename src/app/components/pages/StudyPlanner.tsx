@@ -1,10 +1,10 @@
 import { Calendar as CalendarIcon, Clock, CheckCircle2, ChevronRight, BookOpen, Target, TrendingUp } from "lucide-react";
-import { useData } from "../../context/DataContext";
+import { useData, AnalysisResult } from "../../context/DataContext";
 
 export function StudyPlanner() {
   const { analysisResult } = useData();
 
-  const studyPlan = analysisResult?.studyPlan || [
+  const studyPlan: AnalysisResult['studyPlan'] = analysisResult?.studyPlan || [
     {
       day: "Day 1",
       topic: "Calculus - Integration",
